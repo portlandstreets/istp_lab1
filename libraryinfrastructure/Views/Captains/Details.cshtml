@@ -1,0 +1,25 @@
+﻿@model tournamentdomain.Model.Captain
+
+@{
+    ViewData["Title"] = "Деталі капітана";
+}
+
+<div class="card">
+    <div class="card-body">
+        <h4 class="card-title">Деталі капітана</h4>
+        <hr />
+
+        <dl class="row">
+            <dt class="col-sm-3">Нік</dt>
+            <dd class="col-sm-9">@Model.NicknameNavigation?.Nickname</dd>
+
+            <dt class="col-sm-3">Команда</dt>
+            <dd class="col-sm-9">@Model.TeamNameNavigation?.Name</dd>
+        </dl>
+
+        <div class="d-flex gap-2">
+            <a asp-action="Edit" asp-route-id="@Model?.Nickname" class="btn btn-sm btn-outline-success">Редагувати</a>
+            <a asp-action="Index" class="btn btn-sm btn-secondary">Назад</a>
+        </div>
+    </div>
+</div>

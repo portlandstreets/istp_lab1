@@ -1,0 +1,43 @@
+@{
+    ViewData["Title"] = "Призові пули турнірів";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h1 class="h3 mb-0">Призові пули турнірів</h1>
+    <div>
+        <button id="btnRefresh" class="btn btn-primary btn-sm">Оновити дані</button>
+    </div>
+</div>
+
+<div id="chart_div" style="width: 100%; height: 500px;"></div>
+
+@section Scripts {
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script>
+        google.charts.load('current', { 'packages': ['corechart'] });
+        google.charts.setOnLoadCallback(drawChart);
+
+        async function fetchData() {
+            const resp = await fetch('@Url.Action("PrizePoolsData", "Charts")');
+            const data = await resp.json();
+            return data;
+        }
+
+        async function drawChart() {
+            const raw = await fetchData();
+            const data = google.visualization.arrayToDataTable(raw);
+
+            const options = {
+                title: 'Призові пули турнірів',
+                legend: { position: 'none' },
+                hAxis: { title: 'Турнір' },
+                vAxis: { title: 'Prize Pool' },
+            };
+
+            const chart = new google.visualization.ColumnChart(document.getElementById('chart_div'));
+            chart.draw(data, options);
+        }
+
+        document.getElementById('btnRefresh').addEventListener('click', drawChart);
+    </script>
+}

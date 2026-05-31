@@ -1,0 +1,132 @@
+﻿@using System
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - libraryinfrastructure</title>
+    <script type="importmap"></script>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap_slate.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    </head>
+@{
+    string Active(string controller, string action = null)
+    {
+        var routeCtrl = ViewContext.RouteData.Values["controller"]?.ToString();
+        var routeAct = ViewContext.RouteData.Values["action"]?.ToString();
+        if (!string.IsNullOrEmpty(action))
+        {
+            return string.Equals(routeCtrl, controller, StringComparison.OrdinalIgnoreCase)
+                   && string.Equals(routeAct, action, StringComparison.OrdinalIgnoreCase)
+                   ? "active" : "";
+        }
+        return string.Equals(routeCtrl, controller, StringComparison.OrdinalIgnoreCase) ? "active" : "";
+    }
+}
+<body>
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-dark bg-primary border-bottom mb-3">
+            <div class="container-fluid">
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">libraryinfrastructure</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar"
+                        aria-controls="mainNavbar" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="collapse navbar-collapse" id="mainNavbar">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <li class="nav-item">
+                            <a class="nav-link @Active("Home","Index")" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link @Active("Teams")" asp-area="" asp-controller="Teams" asp-action="Index">Teams</a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link @Active("Players")" asp-area="" asp-controller="Players" asp-action="Index">Players</a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link @Active("Captains")" asp-area="" asp-controller="Captains" asp-action="Index">Captains</a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link @Active("Coaches")" asp-area="" asp-controller="Coaches" asp-action="Index">Coaches</a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link @Active("Matches")" asp-area="" asp-controller="Matches" asp-action="Index">Matches</a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link @Active("Tournaments")" asp-area="" asp-controller="Tournaments" asp-action="Index">Tournaments</a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link @Active("Organizers")" asp-area="" asp-controller="Organizers" asp-action="Index">Organizers</a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link @Active("Sponsors")" asp-area="" asp-controller="Sponsors" asp-action="Index">Sponsors</a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link @Active("Statistics")" asp-area="" asp-controller="Statistics" asp-action="Index">Statistics</a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link @Active("Home","Privacy")" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                        </li>
+                    </ul>
+
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <a class="btn" style="margin-right:10px; color:black;" href="@Url.Action("Index", "Roles")">
+                            Адмін панель
+                        </a>
+                    }
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        <span style="margin-right:10px; color:black;">@User.Identity.Name</span>
+
+                        <form method="post" asp-controller="Account" asp-action="Logout">
+                            <input type="submit" value="Вихід" />
+                        </form>
+                    }
+                    else
+                    {
+                        <a class="text-dark" asp-controller="Account" asp-action="Login" style="text-decoration: none; margin-right: 5px;">Вхід</a>
+
+                        <a class="text-dark" asp-controller="Account" asp-action="Register" style="text-decoration: none;">Реєстація</a>
+                    }
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <div class="container">
+        <nav aria-label="breadcrumb" class="mb-3">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Home</a></li>
+                <li class="breadcrumb-item active" aria-current="page">@ViewData["Title"]</li>
+            </ol>
+        </nav>
+
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="border-top footer text-muted mt-4">
+        <div class="container">
+            &copy; 202622222 - libraryinfrastructure - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+        </div>
+    </footer>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

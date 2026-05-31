@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="lab1_istp/tournamentdomain.csproj" />
+  <Project Path="libraryinfrastructure/tournament_infrastructure.csproj" />
+</Solution>

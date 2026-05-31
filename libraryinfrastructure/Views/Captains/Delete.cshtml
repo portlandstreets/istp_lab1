@@ -1,0 +1,29 @@
+﻿@model tournamentdomain.Model.Captain
+
+@{
+    ViewData["Title"] = "Видалити капітана";
+}
+
+<div class="card">
+    <div class="card-body">
+        <h4 class="card-title text-danger">Підтвердіть видалення</h4>
+        <hr />
+
+        <dl class="row">
+            <dt class="col-sm-3">Нік</dt>
+            <dd class="col-sm-9">@Model.NicknameNavigation?.Nickname</dd>
+
+            <dt class="col-sm-3">Команда</dt>
+            <dd class="col-sm-9">@Model.TeamNameNavigation?.Name</dd>
+        </dl>
+
+        <form asp-action="Delete" method="post">
+            @Html.AntiForgeryToken()
+            <input type="hidden" asp-for="Nickname" />
+            <div class="d-flex gap-2">
+                <button type="submit" class="btn btn-danger">Видалити</button>
+                <a asp-action="Index" class="btn btn-secondary">Скасувати</a>
+            </div>
+        </form>
+    </div>
+</div>

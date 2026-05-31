@@ -1,0 +1,42 @@
+﻿@model tournamentdomain.Model.Captain
+
+@{
+    ViewData["Title"] = "Додати капітана";
+}
+
+<div class="card">
+    <div class="card-body">
+        <h4 class="card-title">Додати капітана</h4>
+        <hr />
+
+        <form asp-action="Create" method="post">
+            @Html.AntiForgeryToken()
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-2"></div>
+
+            <div class="mb-3">
+                <label asp-for="Nickname" class="form-label">Гравець (нік)</label>
+                <select asp-for="Nickname" class="form-select" asp-items="ViewBag.Nickname">
+                    <option value="">-- виберіть гравця --</option>
+                </select>
+                <span asp-validation-for="Nickname" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="TeamName" class="form-label">Команда</label>
+                <select asp-for="TeamName" class="form-select" asp-items="ViewBag.TeamName">
+                    <option value="">-- виберіть команду --</option>
+                </select>
+                <span asp-validation-for="TeamName" class="text-danger"></span>
+            </div>
+
+            <div class="d-flex gap-2">
+                <button type="submit" class="btn btn-primary">Зберегти</button>
+                <a asp-action="Index" class="btn btn-secondary">Назад</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

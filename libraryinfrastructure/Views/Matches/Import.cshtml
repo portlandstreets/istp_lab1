@@ -1,0 +1,114 @@
+﻿@{
+    ViewData["Title"] = "Імпорт матчів";
+}
+
+<h3>Оберіть файл для завантаження (.xlsx або .docx)</h3>
+
+<!-- Повертаємо вашу оригінальну форму -->
+@using (Html.BeginForm("Import", "Matches", FormMethod.Post, new { enctype = "multipart/form-data", id = "frm-excel" }))
+{
+    @Html.AntiForgeryToken()
+    <div asp-validation-summary="All" class="text-danger mb-2"></div>
+    <div class="mb-4">
+        <label for="fileExcel" class="form-label">Виберіть файл (.xlsx або .docx):</label>
+
+        <!-- Обов'язково залишаємо name="fileExcel", щоб контролер міг прийняти файл -->
+        <input type="file" name="fileExcel" id="fileExcel" accept=".xlsx,.xls,.docx,.doc" class="form-control" />
+        <div class="form-text">Для Word (.docx) очікується простий формат: кожен параграф — один матч у вигляді 'MatchDate;Stage;Duration;TournamentName;WinnerTeam'.</div>
+
+        <div class="mt-3">
+            <!-- Кнопку submit ховаємо до моменту, поки користувач не обере файл -->
+            <input type="submit" id="btnUpload" value="Підтвердити і відправити на сервер" class="btn btn-success" style="display: none;" />
+            <a asp-action="Index" class="btn btn-secondary ms-2">Назад</a>
+        </div>
+    </div>
+}
+
+<hr />
+
+<!-- Контейнер, куди JS вставить нашу таблицю для попереднього перегляду -->
+<div id="tableContainer" class="table-responsive"></div>
+
+@section Scripts {
+    <!-- Підключаємо бібліотеку SheetJS для читання файлу в браузері -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+    <script>
+        document.getElementById('fileExcel').addEventListener('change', function (e) {
+            var file = e.target.files[0];
+            if (!file) {
+                // Якщо користувач скасував вибір файлу, ховаємо кнопку і очищаємо таблицю
+                document.getElementById('tableContainer').innerHTML = '';
+                document.getElementById('btnUpload').style.display = 'none';
+                return;
+            }
+
+            var reader = new FileReader();
+
+            // Коли файл зчитано браузером
+            reader.onload = function (e) {
+                var data = new Uint8Array(e.target.result);
+
+                // Читаємо Excel файл
+                var workbook = XLSX.read(data, { type: 'array' });
+
+                // Беремо перший аркуш
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Конвертуємо аркуш у масив масивів
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+
+                // Будуємо HTML таблицю (функція описана нижче)
+                renderTable(jsonData);
+
+                // Показуємо кнопку відправки на сервер, бо файл успішно прочитано
+                document.getElementById('btnUpload').style.display = 'inline-block';
+            };
+
+            // Запускаємо читання файлу
+            reader.readAsArrayBuffer(file);
+        });
+
+        // Функція для малювання таблиці
+        function renderTable(data) {
+            var container = document.getElementById('tableContainer');
+            container.innerHTML = ''; // Очищаємо контейнер перед новим малюванням
+
+            if (data.length === 0) {
+                container.innerHTML = '<p class="text-danger">Файл порожній.</p>';
+                return;
+            }
+
+            var table = document.createElement('table');
+            table.className = 'table table-bordered table-striped table-hover mt-3';
+
+            var thead = document.createElement('thead');
+            thead.className = 'table-dark';
+            var tbody = document.createElement('tbody');
+
+            for (var i = 0; i < data.length; i++) {
+                var row = data[i];
+                if (row.length === 0) continue;
+
+                var tr = document.createElement('tr');
+
+                for (var j = 0; j < row.length; j++) {
+                    var cell = document.createElement(i === 0 ? 'th' : 'td');
+                    cell.textContent = row[j] !== undefined ? row[j] : '';
+                    tr.appendChild(cell);
+                }
+
+                if (i === 0) {
+                    thead.appendChild(tr);
+                } else {
+                    tbody.appendChild(tr);
+                }
+            }
+
+            table.appendChild(thead);
+            table.appendChild(tbody);
+            container.appendChild(table);
+        }
+    </script>
+}

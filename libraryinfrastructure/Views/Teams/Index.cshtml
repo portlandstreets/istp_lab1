@@ -1,0 +1,55 @@
+﻿@model IEnumerable<tournamentdomain.Model.Team>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h1 class="h3 mb-0">Команди</h1>
+    <div>
+        <a class="btn btn-outline-secondary btn-sm" asp-action="Stats">Перегляд статистики</a>
+        <a asp-action="Create" class="btn btn-primary btn-sm ms-2">Create New</a>
+    </div>
+</div>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Country)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CreationYear)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.RankingPoints)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Coach)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Country)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CreationYear)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.RankingPoints)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Coach.Id)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.Name">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.Name">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.Name">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
